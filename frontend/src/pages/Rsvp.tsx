@@ -18,25 +18,6 @@ export const Rsvp: React.FC = () => {
   const [message, setMessage] = useState('');
   const [songRequest, setSongRequest] = useState('');
 
-  // Sample meal options
-  const starters = [
-    { value: 'tart', label: 'Goat Cheese & Caramelised Onion Tart (v)' },
-    { value: 'soup', label: 'Roasted Tomato & Basil Soup (vg, gf)' },
-    { value: 'salmon', label: 'Oak Smoked Salmon with Capers & Dill' }
-  ];
-
-  const mains = [
-    { value: 'beef', label: 'Slow-Cooked Beef Featherblade with Dauphinoise Potatoes' },
-    { value: 'seabass', label: 'Pan-Roasted Seabass with Herb Crushed Potatoes (gf)' },
-    { value: 'risotto', label: 'Wild Mushroom & Truffle Risotto (v, vg, gf)' }
-  ];
-
-  const desserts = [
-    { value: 'fondant', label: 'Warm Chocolate Fondant with Vanilla Bean Ice Cream' },
-    { value: 'sorbet', label: 'Exotic Raspberry & Passion Fruit Sorbet (vg, gf)' },
-    { value: 'tart-dessert', label: 'Classic Lemon Tart with Clotted Cream' }
-  ];
-
   useEffect(() => {
     const fetchRsvp = async () => {
       if (!token || !guest) return;
@@ -60,7 +41,7 @@ export const Rsvp: React.FC = () => {
           // Map fetched RSVP members, ensuring any missing guest party member gets appended
           const mappedMembers = guest.members.map(name => {
             const match = rsvp.membersRSVP.find(m => m.memberName === name);
-            return match || { memberName: name, attending: true, mealChoice: starters[0].value + '|' + mains[0].value + '|' + desserts[0].value, dietary: '' };
+            return match || { memberName: name, attending: true, dietary: '' };
           });
           setMembersRSVP(mappedMembers);
         } else {
@@ -68,7 +49,6 @@ export const Rsvp: React.FC = () => {
           const initialMembers = guest.members.map(name => ({
             memberName: name,
             attending: true,
-            mealChoice: `${starters[0].value}|${mains[0].value}|${desserts[0].value}`,
             dietary: '',
           }));
           setMembersRSVP(initialMembers);
@@ -87,22 +67,6 @@ export const Rsvp: React.FC = () => {
   const handleMemberAttendingChange = (index: number, isAttending: boolean) => {
     const updated = [...membersRSVP];
     updated[index].attending = isAttending;
-    setMembersRSVP(updated);
-  };
-
-  const handleMemberMealChange = (index: number, course: 'starter' | 'main' | 'dessert', value: string) => {
-    const updated = [...membersRSVP];
-    const currentMeals = (updated[index].mealChoice || '||').split('|');
-    
-    let starter = currentMeals[0] || starters[0].value;
-    let main = currentMeals[1] || mains[0].value;
-    let dessert = currentMeals[2] || desserts[0].value;
-
-    if (course === 'starter') starter = value;
-    if (course === 'main') main = value;
-    if (course === 'dessert') dessert = value;
-
-    updated[index].mealChoice = `${starter}|${main}|${dessert}`;
     setMembersRSVP(updated);
   };
 
@@ -239,18 +203,13 @@ export const Rsvp: React.FC = () => {
         {attending && (
           <section className="card">
             <h2 style={{ marginBottom: '1rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '1rem' }}>
-              Meal & Attendance Preferences
+              Attendance & Dietary Requirements
             </h2>
             <p style={{ color: 'var(--color-text-light)', marginBottom: '2rem', fontSize: '0.95rem' }}>
-              Please specify the attendance status and custom menu selections for each individual guest in your party.
+              Please specify the attendance status and any dietary requirements or allergies for each individual guest in your party.
             </p>
 
             {membersRSVP.map((member, index) => {
-              const currentMeals = (member.mealChoice || '||').split('|');
-              const starterValue = currentMeals[0] || starters[0].value;
-              const mainValue = currentMeals[1] || mains[0].value;
-              const dessertValue = currentMeals[2] || desserts[0].value;
-
               return (
                 <div key={index} className="member-rsvp-card">
                   <h3 className="member-rsvp-name">{member.memberName}</h3>
@@ -282,51 +241,6 @@ export const Rsvp: React.FC = () => {
                   {member.attending && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1.5rem' }}>
                       
-                      {/* Starters */}
-                      <div className="form-group">
-                        <label htmlFor={`starter-${index}`}>Starter Option</label>
-                        <select
-                          id={`starter-${index}`}
-                          className="input-control"
-                          value={starterValue}
-                          onChange={(e) => handleMemberMealChange(index, 'starter', e.target.value)}
-                        >
-                          {starters.map(s => (
-                            <option key={s.value} value={s.value}>{s.label}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Mains */}
-                      <div className="form-group">
-                        <label htmlFor={`main-${index}`}>Main Course Option</label>
-                        <select
-                          id={`main-${index}`}
-                          className="input-control"
-                          value={mainValue}
-                          onChange={(e) => handleMemberMealChange(index, 'main', e.target.value)}
-                        >
-                          {mains.map(m => (
-                            <option key={m.value} value={m.value}>{m.label}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Desserts */}
-                      <div className="form-group">
-                        <label htmlFor={`dessert-${index}`}>Dessert Option</label>
-                        <select
-                          id={`dessert-${index}`}
-                          className="input-control"
-                          value={dessertValue}
-                          onChange={(e) => handleMemberMealChange(index, 'dessert', e.target.value)}
-                        >
-                          {desserts.map(d => (
-                            <option key={d.value} value={d.value}>{d.label}</option>
-                          ))}
-                        </select>
-                      </div>
-
                       {/* Dietary text area */}
                       <div className="form-group">
                         <label htmlFor={`dietary-${index}`}>Dietary Requirements & Allergies</label>
@@ -335,7 +249,7 @@ export const Rsvp: React.FC = () => {
                           type="text"
                           className="input-control"
                           placeholder="e.g. Vegetarian, Gluten-Free, Nut Allergies, or None"
-                          value={member.dietary}
+                          value={member.dietary || ''}
                           onChange={(e) => handleMemberDietaryChange(index, e.target.value)}
                         />
                       </div>

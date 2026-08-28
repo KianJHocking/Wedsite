@@ -4,7 +4,7 @@ import { useAuth } from './ProtectedRoute';
 import { Heart, Menu, X, LogOut } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { logout } = useAuth();
+  const { guest, logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,9 +19,9 @@ export const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="container navbar-container">
         <NavLink to="/" className="navbar-logo" onClick={closeMenu}>
-          <span>K</span>
-          <Heart size={18} fill="currentColor" className="fade-in" />
-          <span>S</span>
+          <span>Annabel</span>
+          <Heart size={16} fill="currentColor" className="fade-in" style={{ margin: '0 6px', color: 'var(--color-accent)' }} />
+          <span>Kian</span>
         </NavLink>
 
         {/* Mobile Toggle Button */}
@@ -56,6 +56,15 @@ export const Navbar: React.FC = () => {
           </li>
           <li>
             <NavLink 
+              to="/venue" 
+              className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              The Venue
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
               to="/rsvp" 
               className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
               onClick={closeMenu}
@@ -72,6 +81,18 @@ export const Navbar: React.FC = () => {
               FAQs
             </NavLink>
           </li>
+          {guest?.is_admin && (
+            <li>
+              <NavLink 
+                to="/admin" 
+                className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+                style={{ color: 'var(--color-accent)', fontWeight: 'bold' }}
+              >
+                Admin Panel
+              </NavLink>
+            </li>
+          )}
           <li>
             <button 
               className="btn btn-secondary" 

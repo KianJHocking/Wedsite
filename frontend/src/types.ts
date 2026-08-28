@@ -1,7 +1,9 @@
 export interface Guest {
   username: string;
+  password?: string;
   name: string;
   members: string[];
+  is_admin?: boolean;
 }
 
 export interface MemberRSVP {

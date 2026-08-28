@@ -7,6 +7,8 @@ import { Home } from './pages/Home';
 import { Story } from './pages/Story';
 import { Rsvp } from './pages/Rsvp';
 import { Faqs } from './pages/Faqs';
+import { Venue } from './pages/Venue';
+import { Admin } from './pages/Admin';
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -60,6 +62,17 @@ function App() {
           />
           
           <Route 
+            path="/venue" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Venue />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
             path="/rsvp" 
             element={
               <ProtectedRoute>
@@ -76,6 +89,17 @@ function App() {
               <ProtectedRoute>
                 <MainLayout>
                   <Faqs />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Admin />
                 </MainLayout>
               </ProtectedRoute>
             } 
